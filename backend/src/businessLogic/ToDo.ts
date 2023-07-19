@@ -1,4 +1,5 @@
 import {TodoItem} from "../models/TodoItem";
+import { AttachmentUtils } from '../helpers/attachmentUtils'
 import {parseUserId} from "../auth/utils";
 import {CreateTodoRequest} from "../requests/CreateTodoRequest";
 import {UpdateTodoRequest} from "../requests/UpdateTodoRequest";
@@ -7,6 +8,7 @@ import {ToDoAccess} from "../dataLayer/ToDoAccess";
 
 const uuidv4 = require('uuid/v4');
 const toDoAccess = new ToDoAccess();
+const attachmentUtils = new AttachmentUtils()
 
 export async function getAllToDo(jwtToken: string): Promise<TodoItem[]> {
     const userId = parseUserId(jwtToken);
@@ -16,12 +18,13 @@ export async function getAllToDo(jwtToken: string): Promise<TodoItem[]> {
 export function createToDo(createTodoRequest: CreateTodoRequest, jwtToken: string): Promise<TodoItem> {
     const userId = parseUserId(jwtToken);
     const todoId =  uuidv4();
-    const s3BucketName = process.env.S3_BUCKET_NAME;
+    const s3AttachmentUrl = attachmentUtils.getAttachmentUrl(todoId)
+    // const s3BucketName = process.env.S3_BUCKET_NAME;
     
     return toDoAccess.createToDo({
         userId: userId,
         todoId: todoId,
-        attachmentUrl:  `https://${s3BucketName}.s3.amazonaws.com/${todoId}`, 
+        attachmentUrl:  s3AttachmentUrl, 
         createdAt: new Date().getTime().toString(),
         done: false,
         ...createTodoRequest,
