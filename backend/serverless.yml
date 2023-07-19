@@ -26,7 +26,7 @@ provider:
   environment:
     PROJECT_NAME: udacity-p4
     TODOS_TABLE: udacity-p4-${self:provider.stage}
-    S3_BUCKET_NAME: udacityp4dev-${self:provider.stage}
+    S3_BUCKET_NAME: udacityp4finaldev-${self:provider.stage}
 
 
 custom:
